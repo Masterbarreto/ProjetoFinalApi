@@ -6,11 +6,11 @@ REST API para gerenciamento de máquina de venda de bebidas com integração par
 
 API completa para controle de máquina de vendas automática de bebidas, incluindo:
 
-- **Gerenciamento de Estoque**: Controle de bebidas, marcas e quantidades
-- **Integração ESP32**: Sistema de fila de comandos para controle do hardware
-- **Persistência MongoDB**: Armazenamento robusto com fallback em memória
-- **Validação**: Schemas Yup para garantir integridade dos dados
-- **Scripts de Teste**: Suite completa de testes automatizados
+* **Gerenciamento de Estoque**: controle de bebidas, marcas e quantidades
+* **Integração ESP32**: fila de comandos para interação com hardware
+* **Persistência MongoDB**: armazenamento robusto com fallback para memória
+* **Validação**: schemas Yup garantindo integridade
+* **Testes Automatizados**: suite completa para validar todo o fluxo
 
 ## ⚡ Quick Start
 
@@ -24,22 +24,21 @@ npm install
 
 # 3. Configure as variáveis de ambiente
 cp .env.example .env
-# Edite o arquivo .env com suas configurações
 
-# 4. Popule o banco de dados com dados de exemplo
+# 4. Popule o banco com dados iniciais (opcional)
 npm run seed
 
 # 5. Inicie o servidor
 npm start
 ```
 
-O servidor estará rodando em `http://localhost:3000`
+Servidor disponível em `http://localhost:3000`.
 
 ## 🔧 Pré-requisitos
 
-- **Node.js** 18.x ou superior
-- **npm** 8.x ou superior
-- **MongoDB** 5.0+ (Atlas ou local) - *Opcional, funciona em memória sem MongoDB*
+* **Node.js** 18+
+* **npm** 8+
+* **MongoDB** 5.0+ (Atlas ou local) — *opcional; sem Mongo roda em memória*
 
 ## 📦 Instalação
 
@@ -50,24 +49,22 @@ git clone <repo-url>
 cd ApiProjetoFinal
 ```
 
-### 2. Instale as Dependências
+### 2. Instale Dependências
 
 ```powershell
 npm install
 ```
 
-### 3. Configure as Variáveis de Ambiente
+### 3. Configure o `.env`
 
-Crie um arquivo `.env` na raiz do projeto baseado no `.env.example`:
+Crie e edite:
 
 ```powershell
 cp .env.example .env
 ```
 
-**Edite o arquivo `.env` com suas configurações:**
-
 ```env
-# MongoDB (Opcional - deixe vazio para usar modo em memória)
+# MongoDB (opcional — vazio = modo memória)
 MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/
 DB_NAME=apiprojetofinal
 
@@ -75,17 +72,16 @@ DB_NAME=apiprojetofinal
 PORT=3000
 ```
 
-### 4. Popule o Banco de Dados (Opcional)
-
-Se estiver usando MongoDB, execute o script de seed para criar dados de exemplo:
+### 4. Popule o Banco (Opcional)
 
 ```powershell
 npm run seed
 ```
 
-Isso criará:
-- 3 bebidas (Coca-Cola, Pepsi, Fanta) com estoque inicial
-- 3 marcas correspondentes
+Gera:
+
+* 3 bebidas
+* 3 marcas
 
 ### 5. Inicie o Servidor
 
@@ -93,16 +89,16 @@ Isso criará:
 npm start
 ```
 
-O servidor iniciará em `http://localhost:3000` (ou na porta configurada no `.env`).
+---
 
 ## 📚 Documentação da API
 
-### Bebidas
+### **Bebidas**
 
 #### `GET /bebidas`
-Lista todas as bebidas cadastradas.
 
-**Resposta:**
+Lista todas as bebidas.
+
 ```json
 [
   {
@@ -117,9 +113,9 @@ Lista todas as bebidas cadastradas.
 ```
 
 #### `POST /bebidas`
-Cria uma nova bebida.
 
-**Body:**
+Cria nova bebida.
+
 ```json
 {
   "name": "Coca-Cola 350ml",
@@ -130,32 +126,29 @@ Cria uma nova bebida.
 ```
 
 #### `GET /bebidas/:id`
-Busca uma bebida específica por ID.
+
+Busca bebida por ID.
 
 #### `POST /bebidas/:id/increase?amount=N`
-Aumenta o estoque de uma bebida.
 
-**Query Params:**
-- `amount` (opcional): Quantidade a aumentar (padrão: 1)
+Aumenta o estoque.
+`amount` opcional (padrão = 1).
 
-**Resposta:**
 ```json
 {
   "message": "Estoque aumentado",
-  "beverage": { /* dados da bebida */ }
+  "beverage": { ... }
 }
 ```
 
 #### `POST /bebidas/:id/decrease?amount=N`
-Diminui o estoque de uma bebida.
 
-**Query Params:**
-- `amount` (opcional): Quantidade a diminuir (padrão: 1)
+Reduz estoque.
 
 #### `GET /bebidas/stock`
-Retorna o estoque total de todas as bebidas.
 
-**Resposta:**
+Retorna estoque total.
+
 ```json
 {
   "total": 29
@@ -163,9 +156,9 @@ Retorna o estoque total de todas as bebidas.
 ```
 
 #### `GET /bebidas/stock/brand/:brand`
-Retorna o estoque total de uma marca específica.
 
-**Resposta:**
+Estoque total por marca.
+
 ```json
 {
   "brand": "Fanta",
@@ -174,27 +167,28 @@ Retorna o estoque total de uma marca específica.
 ```
 
 #### `POST /bebidas/:id/select`
-Seleciona uma bebida (cria comando para ESP32).
 
-**Resposta:**
+Cria comando para o ESP32.
+
 ```json
 {
   "message": "Bebida selecionada",
-  "beverage": { /* dados da bebida */ }
+  "beverage": { ... }
 }
 ```
 
 ---
 
-### Marcas
+### **Marcas**
 
 #### `GET /marcas`
-Lista todas as marcas cadastradas.
+
+Lista todas.
 
 #### `POST /marcas`
-Cria uma nova marca.
 
-**Body:**
+Cria marca.
+
 ```json
 {
   "name": "Coca-Cola"
@@ -202,12 +196,13 @@ Cria uma nova marca.
 ```
 
 #### `DELETE /marcas/:id`
-Remove uma marca por ID.
+
+Remove marca.
 
 #### `POST /marcas/:name/release`
-Solicita liberação de todas as bebidas de uma marca (cria comando para ESP32).
 
-**Resposta:**
+Cria comando de liberação por marca.
+
 ```json
 {
   "message": "Release requested for brand Fanta"
@@ -216,167 +211,123 @@ Solicita liberação de todas as bebidas de uma marca (cria comando para ESP32).
 
 ---
 
-### ESP32 Polling
+### **ESP32**
 
 #### `GET /esp32/next`
-Endpoint para o ESP32 consultar comandos pendentes.
 
-**Query Params (opcionais):**
-- `mode`: `pop` (padrão, consome o comando) ou `peek` (apenas visualiza)
-- `ttl`: Tempo em segundos para considerar comando expirado (padrão: sem expiração)
+Polling de comandos.
 
-**Resposta com comando:**
+Parâmetros opcionais:
+
+* `mode=pop|peek` (padrão = pop)
+* `ttl=segundos`
+
+Exemplo com comando:
+
 ```json
 {
   "id": "1",
   "ts": 1764031171275,
   "type": "select",
-  "payload": {
-    "id": "6924f5033c8d743e9a03454e",
-    "name": "Coca-Cola 350ml",
-    "brand": "Coca-Cola",
-    "stock": 16
-  }
+  "payload": { ... }
 }
 ```
 
-**Resposta sem comando:**
-- Status: `204 No Content`
+Sem comando → `204 No Content`.
 
-**Tipos de comando:**
-- `select`: Liberar uma bebida específica (payload contém dados completos da bebida)
-- `release`: Liberar qualquer bebida de uma marca (payload contém apenas `brand`)
+---
 
 ## 🗄️ Configuração do MongoDB
 
-### MongoDB Atlas (Recomendado para Produção)
+### **Atlas (produção)**
 
-1. Crie uma conta gratuita em [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Crie um novo cluster (tier gratuito disponível)
-3. Configure acesso à rede:
-   - Vá em **Network Access** → **Add IP Address**
-   - Para desenvolvimento: adicione `0.0.0.0/0` (qualquer IP)
-   - Para produção: adicione apenas IPs específicos
-4. Crie um usuário de banco de dados:
-   - Vá em **Database Access** → **Add New Database User**
-   - Escolha autenticação por senha
-   - Salve o usuário e senha
-5. Obtenha a string de conexão:
-   - Clique em **Connect** no seu cluster
-   - Escolha **Connect your application**
-   - Copie a string (formato: `mongodb+srv://<username>:<password>@cluster.mongodb.net/`)
-6. Atualize o `.env`:
-   ```env
-   MONGODB_URI=mongodb+srv://seu-usuario:sua-senha@cluster0.xxxxx.mongodb.net/
-   DB_NAME=apiprojetofinal
-   ```
+Passos:
 
-### MongoDB Local
+1. Criar cluster
+2. Liberar IP
+3. Criar usuário
+4. Copiar connection string
+5. Ajustar `.env`
 
-Se preferir rodar localmente:
+### **MongoDB local**
 
 ```powershell
-# Instale o MongoDB Community Server
-# Windows: https://www.mongodb.com/try/download/community
-
-# Inicie o serviço
 mongod
+```
 
-# Configure o .env
+`.env`:
+
+```env
 MONGODB_URI=mongodb://localhost:27017
 DB_NAME=apiprojetofinal
 ```
 
-### Modo Sem MongoDB
+### **Sem MongoDB**
 
-A API funciona perfeitamente sem MongoDB usando armazenamento em memória:
+Deixe `MONGODB_URI` vazio → modo memória.
 
-- Deixe `MONGODB_URI` vazio no `.env`
-- Os dados serão perdidos ao reiniciar o servidor
-- Ideal para testes e desenvolvimento rápido
+---
 
 ## 🧪 Testes
 
-### Script de Testes Automatizado
-
-O projeto inclui um script PowerShell que testa todas as rotas automaticamente:
+### Automatizados
 
 ```powershell
-# Com o servidor rodando, execute em outro terminal:
 powershell -ExecutionPolicy Bypass -File .\scripts\test-api.ps1
 ```
 
-O script testa:
-- ✅ CRUD de bebidas
-- ✅ Gerenciamento de estoque (increase/decrease)
-- ✅ Consulta de estoque total e por marca
-- ✅ Seleção de bebidas
-- ✅ Sistema de fila ESP32
-- ✅ CRUD de marcas
-- ✅ Comando de release por marca
+Cobre:
 
-### Testes Manuais com PowerShell
+* CRUD bebidas
+* increase/decrease
+* total/por marca
+* select ESP32
+* fila ESP32
+* CRUD marcas
+* release por marca
+
+### Manuais
 
 ```powershell
-# Listar bebidas
 Invoke-RestMethod http://localhost:3000/bebidas
+```
 
-# Criar nova bebida
+Criação:
+
+```powershell
 Invoke-RestMethod -Method Post -Uri http://localhost:3000/bebidas `
   -ContentType "application/json" `
   -Body '{"name":"Sprite 350ml","type":"Refrigerante","price":4.5,"brand":"Sprite"}'
-
-# Aumentar estoque
-$id = (Invoke-RestMethod http://localhost:3000/bebidas)[0].id
-Invoke-RestMethod -Method Post -Uri "http://localhost:3000/bebidas/$id/increase?amount=5"
-
-# Selecionar bebida (ESP32)
-Invoke-RestMethod -Method Post -Uri "http://localhost:3000/bebidas/$id/select"
-
-# ESP32 consultar comando
-Invoke-RestMethod http://localhost:3000/esp32/next
 ```
+
+---
 
 ## 🤖 Integração ESP32
 
-### Comportamento Esperado
-
-O ESP32 deve implementar um loop de polling:
+Loop:
 
 ```cpp
-// Pseudocódigo
 while(true) {
   HTTPClient http;
   http.begin("http://api-url:3000/esp32/next");
-  int httpCode = http.GET();
-  
-  if(httpCode == 200) {
-    String payload = http.getString();
-    // Parse JSON e execute ação
-    if(type == "select") {
-      // Liberar bebida específica na posição X
-      liberarBebida(payload.id);
-    } else if(type == "release") {
-      // Liberar primeira bebida da marca
-      liberarPorMarca(payload.brand);
-    }
-  } else if(httpCode == 204) {
-    // Nenhum comando pendente
+  int code = http.GET();
+
+  if(code == 200) {
+    // Executa ação
   }
-  
-  delay(500); // Aguardar 500ms antes da próxima consulta
+
+  delay(500);
 }
 ```
 
-### Parâmetros Avançados
+Extras:
 
-```cpp
-// Modo peek (não consome o comando)
+```
 GET /esp32/next?mode=peek
-
-// Com TTL de 30 segundos (ignora comandos mais antigos)
 GET /esp32/next?mode=pop&ttl=30
 ```
+
+---
 
 ## 📁 Estrutura do Projeto
 
@@ -384,116 +335,74 @@ GET /esp32/next?mode=pop&ttl=30
 ApiProjetoFinal/
 ├── src/
 │   ├── controllers/
-│   │   ├── bebidas/
-│   │   │   └── CreatBebidas.js    # Controllers de bebidas
-│   │   └── marcas/
-│   │       └── MarcasController.js # Controllers de marcas
 │   ├── routes/
-│   │   ├── index.js                # Agregador de rotas
-│   │   ├── bebidas.js              # Rotas de bebidas
-│   │   └── marcas.js               # Rotas de marcas
 │   ├── server/
-│   │   ├── server.js               # Servidor Express
-│   │   └── seed.js                 # Script de população do banco
-│   ├── db.js                       # Conexão MongoDB
-│   └── store.js                    # Camada de dados (MongoDB/Memória)
+│   ├── db.js
+│   └── store.js
 ├── scripts/
-│   └── test-api.ps1                # Script de testes automatizado
-├── .env.example                    # Exemplo de variáveis de ambiente
-├── .gitignore
+│   └── test-api.ps1
+├── .env.example
 ├── package.json
 └── README.md
 ```
 
+---
+
 ## 🔒 Segurança
 
-### Recomendações para Produção
+* Use `.env`
+* Restrinja CORS
+* JWT / API Key
+* HTTPS
+* Rate limiting
+* Sanitização de entrada
 
-- ✅ Use variáveis de ambiente para credenciais
-- ✅ Configure CORS adequadamente (lista branca de origens)
-- ✅ Implemente rate limiting
-- ✅ Adicione autenticação (JWT, API Keys)
-- ✅ Use HTTPS em produção
-- ✅ Valide e sanitize todas as entradas
-- ✅ Configure MongoDB com usuário de acesso restrito
-
-### CORS
-
-O CORS está habilitado para todas as origens em desenvolvimento. Para produção, edite `src/server/server.js`:
-
-```javascript
+```js
 app.use(cors({
-  origin: ['https://seu-frontend.com', 'https://outro-dominio.com']
+  origin: ['https://seu-frontend.com']
 }));
 ```
 
+---
+
 ## 🐛 Troubleshooting
 
-### Erro de Conexão MongoDB
+### MongoDB não conecta
 
-```
-Error: connect ECONNREFUSED
-```
+Verifique `MONGODB_URI` e permissões Atlas.
 
-**Solução:**
-- Verifique se `MONGODB_URI` está correto no `.env`
-- Certifique-se de que o IP está liberado no MongoDB Atlas
-- Teste a conexão: `mongosh "sua-connection-string"`
+### Porta ocupada
 
-### Porta 3000 em Uso
-
-```
-Error: listen EADDRINUSE: address already in use :::3000
-```
-
-**Solução:**
 ```powershell
-# Windows: Encerre processo na porta 3000
 netstat -ano | findstr :3000
 taskkill /PID <PID> /F
-
-# Ou altere a porta no .env
-PORT=3001
 ```
 
-### Rotas Retornando 404
+### Rotas 404
 
-**Solução:**
-- Verifique se o servidor está rodando
-- Confirme a URL base: `http://localhost:3000`
-- Execute `npm run seed` para popular dados de exemplo
-
-## 📝 Scripts Disponíveis
-
-```powershell
-# Iniciar servidor
-npm start
-
-# Popular banco de dados
-npm run seed
-```
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença ISC.
-
-## 💡 Suporte
-
-Para dúvidas e suporte:
-- Abra uma [issue](link-para-issues) no GitHub
-- Consulte a documentação do [MongoDB](https://docs.mongodb.com/)
-- Consulte a documentação do [Express](https://expressjs.com/)
+Servidor offline ou URL incorreta.
 
 ---
 
-**Desenvolvido com ❤️ para o projeto de máquina de venda automática**
-#   P r o j e t o F i n a l A p i  
- 
+## 📝 Scripts
+
+```powershell
+npm start
+npm run seed
+```
+
+---
+
+## 🤝 Contribuição
+
+Fluxo padrão GitHub.
+
+---
+
+## 📄 Licença
+
+ISC.
+
+---
+
+**Desenvolvido com ❤️ para o projeto de máquina de venda automática.**
